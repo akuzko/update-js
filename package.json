@@ -1,18 +1,24 @@
 {
-  "name": "updatejs",
+  "name": "update",
   "version": "1.0.0",
   "description": "JS object immutability helper",
   "main": "index.js",
   "scripts": {
     "test": "mocha test.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akuzko/update.git"
+  },
   "keywords": [
     "js",
     "object",
     "immutability",
-    "helper"
+    "helper",
+    "update"
   ],
   "author": "Artem Kuzko <a.kuzko@gmail.com> (https://github.com/akuzko)",
+  "homepage": "https://github.com/akuzko/update",
   "license": "MIT",
   "dependencies": {
     "lodash.set": ">= 3.7.0"
