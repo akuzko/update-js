@@ -4,8 +4,9 @@ var set = require('lodash.set');
 
 update.with = updateWith;
 updateIn.with = updateInWith;
-exports.default = update;
-exports.updateIn = updateIn;
+update.in = updateIn;
+
+module.exports = update;
 
 function updateInWith(obj, name, fn) {
   _update(obj, name, fn);
