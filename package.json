@@ -1,5 +1,5 @@
 {
-  "name": "update",
+  "name": "update-js",
   "version": "1.0.0",
   "description": "JS object immutability helper",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akuzko/update.git"
+    "url": "git+https://github.com/akuzko/update-js.git"
   },
   "keywords": [
     "js",
@@ -18,7 +18,7 @@
     "update"
   ],
   "author": "Artem Kuzko <a.kuzko@gmail.com> (https://github.com/akuzko)",
-  "homepage": "https://github.com/akuzko/update",
+  "homepage": "https://github.com/akuzko/update-js",
   "license": "MIT",
   "dependencies": {
     "lodash.set": ">= 3.7.0"

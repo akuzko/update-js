@@ -1,21 +1,22 @@
-update
-======
+update-js
+=========
 
 JS object immutability helper
 
 ## Installation
 
 ```
-npm install --save update
+npm install --save update-js
 ```
 
 ## Usage
 
 ```js
-import update from 'update';
+import update from 'update-js';
 
 const obj = { foo: { bar: [{ baz: 1 }, { baz: 2 }] }, bak: { barbaz: 1 } };
-const upd = update(obj, 'foo.bar.1.baz', 3);
+const upd = update(obj, 'foo.bar.1.baz', 3); // the same as:
+// const upd = { ...obj, foo: { ...obj.foo, bar: [obj.foo.bar[0], { ...obj.foo.bar[1], baz: 3 } } };
 
 // all of the following is true:
 upd.foo.bar[1].baz === 3;
