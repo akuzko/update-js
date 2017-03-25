@@ -3,6 +3,9 @@ update-js
 
 JS object immutability helper
 
+[![build status](https://img.shields.io/travis/akuzko/update-js/master.svg?style=flat-square)](https://travis-ci.org/akuzko/update-js)
+[![npm version](https://img.shields.io/npm/v/update-js.svg?style=flat-square)](https://www.npmjs.com/package/update-js)
+
 ## Installation
 
 ```
