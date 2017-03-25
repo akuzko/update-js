@@ -6,10 +6,6 @@
   "scripts": {
     "test": "mocha test.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/akuzko/update-js.git"
-  },
   "keywords": [
     "js",
     "object",
@@ -19,6 +15,13 @@
   ],
   "author": "Artem Kuzko <a.kuzko@gmail.com> (https://github.com/akuzko)",
   "homepage": "https://github.com/akuzko/update-js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akuzko/update-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akuzko/update-js/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "lodash.set": ">= 3.7.0"
