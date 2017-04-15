@@ -39,8 +39,8 @@ function _update(current, name, fn) {
     var lookupKey = key;
     key = lookupIndex(current, key);
     if (key === undefined) {
-      throw new Error(`no object found by ${lookupKey}. autocreate is not supported`);
-    } 
+      throw new Error('no object found by ' + lookupKey + '. autocreate is not supported');
+    }
   }
 
   if (current[key] === undefined) {
