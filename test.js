@@ -49,7 +49,7 @@ describe('update', function() {
     it('carefully sets deeply nested item, original object changed in place', function() {
       var obj = { foo: { bar: { baz: [1, 2, 3] } }, bak: { big: 1 } };
       var copy = Object.assign({}, obj);
-      
+
       update.in(copy, 'foo.bar.baz.1', 4);
       assert.notStrictEqual(copy.foo, obj.foo, 'obj.foo should not be updated in place');
       assert.notStrictEqual(copy.foo.bar, obj.foo.bar, 'obj.foo.bar should not be updated in place');
@@ -61,7 +61,7 @@ describe('update', function() {
     describe('update.in.with', function() {
       it('sets deeply nested item with setter function, changing original object in place', function() {
         var obj = { foo: { bar: { baz: [1, 2, 3] } }, bak: { big: 1 } };
-        
+
         update.in.with(obj, 'foo.bar.baz.1', function(n){ return n * 2 });
         assert.equal(obj.foo.bar.baz[1], 4);
       });
@@ -85,7 +85,7 @@ describe('update', function() {
         var item2 = { id: 2, baz: 3 };
         var obj = { foo: { bar: [item1, item2] } };
         var upd = update(obj, 'foo.bar.{id:2}.baz', 5);
-        
+
         assert.equal(upd.foo.bar[1].baz, 5);
         assert.notStrictEqual(upd.foo.bar[1], item2, 'updated item should not be updated in place');
         assert.strictEqual(upd.foo.bar[0], item1, 'items in the collection should not be cloned');
@@ -119,6 +119,34 @@ describe('update', function() {
           update(obj, 'foo.bar.{id:2}.baz', 3);
         }, 'no object found by {id:2}. autocreate is not supported');
       });
+    });
+  });
+
+  describe('update.add', function() {
+    it('adds new item to the collection', function() {
+      var obj = { foo: { bar: [1, 2] } };
+      var upd = update.add(obj, 'foo.bar', 3);
+
+      assert.deepEqual(upd.foo.bar, [1, 2, 3]);
+    });
+  });
+
+  describe('update.remove', function() {
+    it('removes object from the collection', function() {
+      var obj = { foo: { bar: [1, 2, 3, 4] } };
+      var upd = update.remove(obj, 'foo.bar.1');
+
+      assert.deepEqual(upd.foo.bar, [1, 3, 4]);
+    });
+
+    it('removes object from the collection with lookup path', function() {
+      var item1 = { id: 1, baz: 2 };
+      var item2 = { id: 2, baz: 3 };
+      var obj = { foo: { bar: [item1, item2] } };
+      var upd = update.remove(obj, 'foo.bar.{id:2}');
+
+      assert.deepEqual(upd.foo.bar, [item1]);
+      assert.strictEqual(upd.foo.bar[0], item1);
     });
   });
 });

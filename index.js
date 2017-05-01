@@ -3,6 +3,8 @@
 var set = require('lodash.set');
 
 update.with = updateWith;
+update.add = updateAdd;
+update.remove = updateRemove;
 updateIn.with = updateInWith;
 update.in = updateIn;
 
@@ -28,6 +30,33 @@ function updateWith(obj, name, fn) {
   return updateInWith(current, name, fn);
 }
 
+function updateAdd(obj, name, item) {
+  return updateWith(obj, name, function(collection) {
+    return collection.concat([item]);
+  });
+}
+
+function updateRemove(obj, name) {
+  var match = name.match(/^(.+)\.(?!\.)(.+)$/);
+
+  if (match) {
+    var path = match[1], key = match[2], index = key;
+
+    return updateWith(obj, path, function(collection) {
+      if (isLookupKey(key)) {
+        index = lookupIndex(collection, key);
+      }
+      index = parseInt(index);
+
+      if (index > -1) {
+        return collection.slice(0, index).concat(collection.slice(index + 1));
+      }
+
+      return collection;
+    });
+  }
+}
+
 function _update(current, name, fn) {
   var match = name.match(/^([{\w\d:_-}]+)\.?(.+)?$/);
   var key = match[1], rest = match[2];
@@ -38,7 +67,7 @@ function _update(current, name, fn) {
     }
     var lookupKey = key;
     key = lookupIndex(current, key);
-    if (key === undefined) {
+    if (key === -1) {
       throw new Error('no object found by ' + lookupKey + '. autocreate is not supported');
     }
   }
@@ -75,6 +104,8 @@ function lookupIndex(collection, key) {
       return i;
     }
   }
+
+  return -1;
 }
 
 function matches(object, terms) {

@@ -68,9 +68,50 @@ upd.foo.items[1].bar === 5 // true
 ```
 
 Notes on object lookup:
-- object auto-generation is not supported when using path with object lookup, i.e. both collection and object specified by lookup path should exist
+- object auto-generation is not supported when using path with object lookup, i.e. both collection and object specified by lookup key should exist
 - lookup should be used with simple values since it uses `==` comparison
 - it is possible to specify several lookup fields, like `{id:2,name:foo}`
+
+### Collection Helpers
+
+### `update.add`
+
+```js
+import update from 'update-js';
+
+const obj = { foo: { bar: [1, 2] } };
+const upd = update.add(obj, 'foo.bar', 3);
+
+upd.foo.bar // => [1, 2, 3];
+```
+
+### `update.remove`
+
+```js
+import update from 'update-js';
+
+const obj = { foo: { bar: [1, 2, 3, 4] } };
+const upd = update.remove(obj, 'foo.bar.1');
+
+upd.foo.bar // => [1, 3, 4];
+```
+
+`update.remove` also supports element removal with lookup key:
+
+```js
+const obj = {
+  foo: {
+    items: [
+      { id: 1, bar: 2 },
+      { id: 2, bar: 3 },
+      { id: 3, bar: 4 }
+    ]
+  }
+}
+const upd = update.remove(obj, 'foo.items.{id:2}');
+
+upd.foo.items // => [{ id: 1, bar: 2 }, { id: 3, bar: 4 }]
+```
 
 ## License
 
