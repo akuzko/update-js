@@ -5,44 +5,51 @@ var set = require('lodash.set');
 update.with = updateWith;
 update.add = updateAdd;
 update.remove = updateRemove;
+update.del = updateDel;
 updateIn.with = updateInWith;
 update.in = updateIn;
 
 module.exports = update;
 
-function updateInWith(obj, name, fn) {
-  _update(obj, name, fn);
+function updateInWith(obj, path, fn) {
+  if (typeof path === 'object') {
+    Object.keys(path).forEach(function(updatePath) {
+      updateInWith(obj, updatePath, function(){ return path[updatePath] });
+    });
+  } else {
+    _update(obj, path, fn);
+  }
 
   return obj;
 }
 
-function updateIn(obj, name, value) {
-  return updateInWith(obj, name, function(){ return value });
+function updateIn(obj, path, value) {
+  return updateInWith(obj, path, function(){ return value });
 }
 
-function update(obj, name, value) {
-  return updateWith(obj, name, function(){ return value });
+function update(obj, path, value) {
+  return updateWith(obj, path, function(){ return value });
 }
 
-function updateWith(obj, name, fn) {
+function updateWith(obj, path, fn) {
   var current = shallowCopy(obj);
 
-  return updateInWith(current, name, fn);
+  return updateInWith(current, path, fn);
 }
 
-function updateAdd(obj, name, item) {
-  return updateWith(obj, name, function(collection) {
+function updateAdd(obj, path, item) {
+  return updateWith(obj, path, function(collection) {
     return collection.concat([item]);
   });
 }
 
-function updateRemove(obj, name) {
-  var match = name.match(/^(.+)\.(?!\.)(.+)$/);
+function updateRemove(obj, path) {
+  var match = path.match(/^(.+)\.(?!\.)(.+)$/);
 
   if (match) {
-    var path = match[1], key = match[2], index = key;
+    var collectionPath = match[1], key = match[2], index = key;
 
-    return updateWith(obj, path, function(collection) {
+    return updateWith(obj, collectionPath, function(collection) {
       if (isLookupKey(key)) {
         index = lookupIndex(collection, key);
       }
@@ -55,10 +62,24 @@ function updateRemove(obj, name) {
       return collection;
     });
   }
+
+  return obj;
 }
 
-function _update(current, name, fn) {
-  var match = name.match(/^([{\w\d:_-}]+)\.?(.+)?$/);
+function updateDel(obj, path) {
+  var match = path.match(/^(.+)\.(?!\.)?(.+)$/);
+  var objPath = match[1], key = match[2];
+
+  return updateWith(obj, objPath, function(value) {
+    var upd = shallowCopy(value);
+
+    delete upd[key];
+    return upd;
+  });
+}
+
+function _update(current, path, fn) {
+  var match = path.match(/^([{\w\d:_-}]+)\.?(.+)?$/);
   var key = match[1], rest = match[2];
 
   if (isLookupKey(key)) {
@@ -76,7 +97,7 @@ function _update(current, name, fn) {
     if (isLookupKey(rest)) {
       throw new Error('autocreate with lookup path is not supported');
     }
-    return set(current, name.split('.'), fn());
+    return set(current, path.split('.'), fn());
   }
   if (!rest) {
     return current[key] = fn(current[key]);

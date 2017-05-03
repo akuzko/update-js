@@ -36,6 +36,16 @@ describe('update', function() {
     assert.equal(upd.foo.bar.baz[1], 4, 'value under desired name should be updated');
   });
 
+  context('when object is used as path', function() {
+    it('uses object keys as paths to update target object', function() {
+      var obj = { foo: { bar: 'baz' }, baz: [{ bak: 'foo' }] };
+      var upd = update(obj, { 'foo.bar': 'baz2', 'foo.baz.0.bak': 'foo2' });
+
+      assert.equal(upd.foo.bar, 'baz2');
+      assert.equal(upd.foo.baz[0].bak, 'foo2');
+    });
+  });
+
   describe('update.with', function() {
     it('sets deeply nested item with setter function', function() {
       var obj = { foo: { bar: { baz: [1, 2, 3] } }, bak: { big: 1 } };
@@ -147,6 +157,15 @@ describe('update', function() {
 
       assert.deepEqual(upd.foo.bar, [item1]);
       assert.strictEqual(upd.foo.bar[0], item1);
+    });
+  });
+
+  describe('update.del', function() {
+    it('removes key from object', function() {
+      var obj = { foo: { bar: 'baz', baz: 'bak' } };
+      var upd = update.del(obj, 'foo.bar');
+
+      assert.deepEqual(upd, { foo: { baz: 'bak' } });
     });
   });
 });

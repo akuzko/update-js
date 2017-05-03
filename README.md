@@ -34,6 +34,22 @@ upd.foo.bar[1]     !== obj.foo.bar[1];
 upd.bak            === obj.bak;
 ```
 
+### Updating Multiple Keys at Once
+
+By passing object instead of string path you can update multiple values with one operation. In this
+case object keys are used as paths at which corresponding object values should be assigned.
+
+```js
+const obj = { foo: { bar: 'baz' }, baz: [{ bak: 'foo' }] };
+const upd = update(obj, {
+  'foo.bar': 'baz2',
+  'foo.baz.0.bak': 'foo2'
+});
+
+upd.foo.bar // => 'baz2'
+foo.baz[0].bak // => 'foo2'
+```
+
 ### Using Custom Updater Function
 
 You can use `update.with` function that accepts updater function instead of value.
@@ -70,11 +86,13 @@ upd.foo.items[1].bar === 5 // true
 Notes on object lookup:
 - object auto-generation is not supported when using path with object lookup, i.e. both collection and object specified by lookup key should exist
 - lookup should be used with simple values since it uses `==` comparison
-- it is possible to specify several lookup fields, like `{id:2,name:foo}`
+- it is possible to specify several lookup fields, like `{type:foo,name:bar}`
 
-### Collection Helpers
+### Array Update Helpers
 
-### `update.add`
+#### `update.add`
+
+Adds item to the array.
 
 ```js
 import update from 'update-js';
@@ -85,7 +103,9 @@ const upd = update.add(obj, 'foo.bar', 3);
 upd.foo.bar // => [1, 2, 3];
 ```
 
-### `update.remove`
+#### `update.remove`
+
+Removes item from the array by index or lookup key.
 
 ```js
 import update from 'update-js';
@@ -96,7 +116,7 @@ const upd = update.remove(obj, 'foo.bar.1');
 upd.foo.bar // => [1, 3, 4];
 ```
 
-`update.remove` also supports element removal with lookup key:
+With lookup key:
 
 ```js
 const obj = {
@@ -112,6 +132,27 @@ const upd = update.remove(obj, 'foo.items.{id:2}');
 
 upd.foo.items // => [{ id: 1, bar: 2 }, { id: 3, bar: 4 }]
 ```
+
+Note that this helper cannot be used to remove item from array if the latter is used as
+target object, i.e. `update.remove(obj, '1')` won't work.
+
+### Object Update Helpers
+
+#### `update.del`
+
+Deletes object property at specified path.
+
+```js
+import update from 'update-js';
+
+const obj = { foo: { bar: { baz: 'bak', bak: 'baz' } } };
+const upd = update.del(obj, 'foo.bar.baz');
+
+upd.foo.bar // => { bak: 'baz' };
+```
+
+Note that this helper cannot be used to delete property for target object itself,
+i.e. `update.del(obj, 'foo')` won't work.
 
 ## License
 
