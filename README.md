@@ -138,6 +138,19 @@ target object, i.e. `update.remove(obj, '1')` won't work.
 
 ### Object Update Helpers
 
+#### `update.assign`
+
+Assigns properties of the given object to the one specified by the path.
+
+```js
+import update from 'update-js';
+
+const obj = { foo: { bar: { baz: 'bak' } } };
+const upd = update.assign(obj, 'foo.bar', { bak: 'baz' });
+
+upd.foo.bar // => { baz: 'bak', bak: 'baz' };
+```
+
 #### `update.del`
 
 Deletes object property at specified path.

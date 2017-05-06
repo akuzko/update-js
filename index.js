@@ -5,6 +5,7 @@ var set = require('lodash.set');
 update.with = updateWith;
 update.add = updateAdd;
 update.remove = updateRemove;
+update.assign = updateAssign;
 update.del = updateDel;
 updateIn.with = updateInWith;
 update.in = updateIn;
@@ -64,6 +65,12 @@ function updateRemove(obj, path) {
   }
 
   return obj;
+}
+
+function updateAssign(obj, path, object) {
+  return updateWith(obj, path, function(old) {
+    return Object.assign({}, old, object);
+  });
 }
 
 function updateDel(obj, path) {

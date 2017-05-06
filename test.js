@@ -160,6 +160,15 @@ describe('update', function() {
     });
   });
 
+  describe('update.assign', function() {
+    it('merges passed object with target one', function() {
+      var obj = { foo: { bar: { baz: 'bak' } } };
+      var upd = update.assign(obj, 'foo.bar', { bak: 'barbaz' });
+
+      assert.deepEqual(upd.foo.bar, { baz: 'bak', bak: 'barbaz' });
+    });
+  });
+
   describe('update.del', function() {
     it('removes key from object', function() {
       var obj = { foo: { bar: 'baz', baz: 'bak' } };
