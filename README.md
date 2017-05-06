@@ -47,7 +47,7 @@ const upd = update(obj, {
 });
 
 upd.foo.bar // => 'baz2'
-foo.baz[0].bak // => 'foo2'
+upd.foo.baz[0].bak // => 'foo2'
 ```
 
 ### Using Custom Updater Function
