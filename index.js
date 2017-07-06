@@ -3,7 +3,12 @@
 var set = require('lodash.set');
 
 update.with = updateWith;
-update.add = updateAdd;
+update.unshift = updateUnshift;
+update.prepend = updateUnshift;
+update.shift = updateShift;
+update.push = updatePush;
+update.add = updatePush;
+update.pop = updatePop;
 update.remove = updateRemove;
 update.assign = updateAssign;
 update.del = updateDel;
@@ -38,9 +43,27 @@ function updateWith(obj, path, fn) {
   return updateInWith(current, path, fn);
 }
 
-function updateAdd(obj, path, item) {
+function updateUnshift(obj, path, item) {
+  return updateWith(obj, path, function(collection) {
+    return [item].concat(collection);
+  });
+}
+
+function updateShift(obj, path) {
+  return updateWith(obj, path, function(collection) {
+    return collection.slice(1);
+  });
+}
+
+function updatePush(obj, path, item) {
   return updateWith(obj, path, function(collection) {
     return collection.concat([item]);
+  });
+}
+
+function updatePop(obj, path) {
+  return updateWith(obj, path, function(collection) {
+    return collection.slice(0, -1);
   });
 }
 

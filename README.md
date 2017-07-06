@@ -90,7 +90,7 @@ Notes on object lookup:
 
 ### Array Update Helpers
 
-#### `update.add`
+#### `update.unshift`
 
 Adds item to the array.
 
@@ -98,10 +98,27 @@ Adds item to the array.
 import update from 'update-js';
 
 const obj = { foo: { bar: [1, 2] } };
-const upd = update.add(obj, 'foo.bar', 3);
+const upd = update.unshift(obj, 'foo.bar', 3);
+
+upd.foo.bar // => [3, 1, 2];
+```
+
+_Alias:_ `update.prepend`
+
+#### `update.push`
+
+Adds item to the array.
+
+```js
+import update from 'update-js';
+
+const obj = { foo: { bar: [1, 2] } };
+const upd = update.push(obj, 'foo.bar', 3);
 
 upd.foo.bar // => [1, 2, 3];
 ```
+
+_Alias:_ `update.add`
 
 #### `update.remove`
 

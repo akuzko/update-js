@@ -132,6 +132,33 @@ describe('update', function() {
     });
   });
 
+  describe('update.unshift', function() {
+    it('prepends new item to the collection', function() {
+      var obj = { foo: { bar: [1, 2] } };
+      var upd = update.unshift(obj, 'foo.bar', 3);
+
+      assert.deepEqual(upd.foo.bar, [3, 1, 2]);
+    });
+  });
+
+  describe('update.prepend', function() {
+    it('prepends new item to the collection', function() {
+      var obj = { foo: { bar: [1, 2] } };
+      var upd = update.prepend(obj, 'foo.bar', 3);
+
+      assert.deepEqual(upd.foo.bar, [3, 1, 2]);
+    });
+  });
+
+  describe('update.push', function() {
+    it('adds new item to the collection', function() {
+      var obj = { foo: { bar: [1, 2] } };
+      var upd = update.push(obj, 'foo.bar', 3);
+
+      assert.deepEqual(upd.foo.bar, [1, 2, 3]);
+    });
+  });
+
   describe('update.add', function() {
     it('adds new item to the collection', function() {
       var obj = { foo: { bar: [1, 2] } };
