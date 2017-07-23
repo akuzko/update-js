@@ -4,7 +4,7 @@
   "description": "JS object immutability helper",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha test.js fp/test.js"
   },
   "keywords": [
     "js",

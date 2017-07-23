@@ -64,7 +64,9 @@ upd.foo.bar // => [2, 4]
 
 Be careful not to update old object in place when using updater function.
 
-### Using Object Lookup Feature
+### Using Object Lookup Keys
+
+Lookup keys are used to index objects in array by their property values. For example:
 
 ```js
 import update from 'update-js';
@@ -88,11 +90,41 @@ Notes on object lookup:
 - lookup should be used with simple values since it uses `==` comparison
 - it is possible to specify several lookup fields, like `{type:foo,name:bar}`
 
+## `update-js/fp` Module
+
+Aside from main functionality of `update` function, `update-js` also provides `update-js/fp` module.
+The `updateFp` function imported from it generates a transformation-currying function that accepts
+a subject of update as it's only argument. It can be used as a callback for some state-updater
+function. For example, one may have something like:
+
+```js
+import update from 'update-js/fp';
+
+setState(update('foo.bar.baz', 5));
+// ^ with `update` from 'update-js' it is the same as:
+// setState((state) => {
+//   return update(state, 'foo.bar.baz', 5);
+// });
+```
+
+`updateFp` function has the same helper methods as it's `update` counterpart, for example:
+
+```js
+import update from 'update';
+import updateFp from 'update/fp';
+
+update.add(state, 'list.items', obj);
+// ^ the same as:
+updateFp.add('list.items', obj)(state);
+```
+
+## Helper Methods
+
 ### Array Update Helpers
 
 #### `update.unshift`
 
-Adds item to the array.
+Adds item to the array at the beginning of it.
 
 ```js
 import update from 'update-js';
