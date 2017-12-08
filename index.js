@@ -109,7 +109,7 @@ function updateDel(obj, path) {
 }
 
 function _update(current, path, fn) {
-  var match = path.match(/^([{\w\d:_-}]+)\.?(.+)?$/);
+  var match = path.match(/^([{\w\d:_\-}]+)\.?(.+)?$/);
   var key = match[1], rest = match[2];
 
   if (isLookupKey(key)) {
