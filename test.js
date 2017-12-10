@@ -130,6 +130,21 @@ describe('update', function() {
         }, 'no object found by {id:2}. autocreate is not supported');
       });
     });
+
+    context('when lookup key or value has `-`', function() {
+      it('performs lookup and carefully sets deeply nested item', function() {
+        var item1 = { 'item-name': 'item-1', baz: 2 };
+        var item2 = { 'item-name': 'item-2', baz: 3 };
+        var obj = { foo: { bar: [item1, item2] } };
+        var upd = update(obj, 'foo.bar.{item-name:item-2}.baz', 5);
+
+        assert.equal(upd.foo.bar[1].baz, 5);
+        assert.notStrictEqual(upd.foo.bar[1], item2, 'updated item should not be updated in place');
+        assert.strictEqual(upd.foo.bar[0], item1, 'items in the collection should not be cloned');
+        assert.notStrictEqual(upd.foo.bar, obj.foo.bar, 'collection should not be updated in place');
+        assert.notStrictEqual(upd.foo, obj.foo, 'object should not be updated in place');
+      });
+    });
   });
 
   describe('update.unshift', function() {
