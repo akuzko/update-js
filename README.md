@@ -50,6 +50,22 @@ upd.foo.bar // => 'baz2'
 upd.foo.baz[0].bak // => 'foo2'
 ```
 
+#### Using Helper Methods in Multi-Keys Updates
+
+You can also use [helper methods](#helper-methods) when updating multiple keys at once. When
+calling them, you just have to omit first two `obj` and `path` arguments:
+
+```js
+const obj = { foo: true, bar: { baz: [1, 2], bak: [{ a: 'a1' }, { a: 'a2' }] } };
+const upd = update(obj, {
+  foo: false,
+  'bar.baz': update.push(3),
+  'bar.bak.{a:a2}': update.assign({ b: 'b2' })
+});
+
+upd // => { foo: false, bar: { baz: [1, 2, 3], bak: [{ a: 'a1' }, { a: 'a2', b: 'b2' }] } }
+```
+
 ### Using Custom Updater Function
 
 You can use `update.with` function that accepts updater function instead of value.
@@ -117,6 +133,9 @@ update.add(state, 'list.items', obj);
 // ^ the same as:
 updateFp.add('list.items', obj)(state);
 ```
+
+**NOTE:** if you want to use update helpers in multi-key updates, you have to use the ones
+provided by base `update` package.
 
 ## Helper Methods
 

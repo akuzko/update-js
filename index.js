@@ -2,25 +2,39 @@
 
 var set = require('lodash.set');
 
-update.with = updateWith;
-update.unshift = updateUnshift;
-update.prepend = updateUnshift;
-update.shift = updateShift;
-update.push = updatePush;
-update.add = updatePush;
-update.pop = updatePop;
-update.remove = updateRemove;
-update.assign = updateAssign;
-update.del = updateDel;
 updateIn.with = updateInWith;
 update.in = updateIn;
 
 module.exports = update;
 
+var slice = Array.prototype.slice;
+
+function Helper(fn, args) {
+  this.fn = fn;
+  this.args = slice.call(args);
+}
+
+function createHelper(handler) {
+  return function() {
+    if (arguments.length < 2) {
+      return new Helper(handler, arguments);
+    } else {
+      var args = slice.call(arguments, 1)
+      args.unshift(shallowCopy(arguments[0]));
+      return handler.apply(null, args);
+    }
+  }
+}
+
 function updateInWith(obj, path, fn) {
   if (typeof path === 'object') {
     Object.keys(path).forEach(function(updatePath) {
-      updateInWith(obj, updatePath, function(){ return path[updatePath] });
+      var value = path[updatePath];
+      if (value instanceof Helper) {
+        value.fn.apply(null, [obj, updatePath].concat(value.args));
+      } else {
+        updateInWith(obj, updatePath, function(){ return path[updatePath] });
+      }
     });
   } else {
     _update(obj, path, fn);
@@ -34,46 +48,49 @@ function updateIn(obj, path, value) {
 }
 
 function update(obj, path, value) {
-  return updateWith(obj, path, function(){ return value });
+  return update.with(obj, path, function(){ return value });
 }
 
-function updateWith(obj, path, fn) {
-  var current = shallowCopy(obj);
+update.with = createHelper(function(obj, path, fn) {
+  return updateInWith(obj, path, fn);
+});
 
-  return updateInWith(current, path, fn);
-}
 
-function updateUnshift(obj, path, item) {
-  return updateWith(obj, path, function(collection) {
+update.unshift = createHelper(function(obj, path, item) {
+  return updateInWith(obj, path, function(collection) {
     return [item].concat(collection);
   });
-}
+});
 
-function updateShift(obj, path) {
-  return updateWith(obj, path, function(collection) {
+update.prepend = update.unshift;
+
+update.shift = createHelper(function(obj, path) {
+  return updateInWith(obj, path, function(collection) {
     return collection.slice(1);
   });
-}
+});
 
-function updatePush(obj, path, item) {
-  return updateWith(obj, path, function(collection) {
+update.push = createHelper(function(obj, path, item) {
+  return updateInWith(obj, path, function(collection) {
     return collection.concat([item]);
   });
-}
+});
 
-function updatePop(obj, path) {
-  return updateWith(obj, path, function(collection) {
+update.add = update.push;
+
+update.pop = createHelper(function(obj, path) {
+  return updateInWith(obj, path, function(collection) {
     return collection.slice(0, -1);
   });
-}
+});
 
-function updateRemove(obj, path) {
+update.remove = createHelper(function(obj, path) {
   var match = path.match(/^(.+)\.(?!\.)(.+)$/);
 
   if (match) {
     var collectionPath = match[1], key = match[2], index = key;
 
-    return updateWith(obj, collectionPath, function(collection) {
+    return updateInWith(obj, collectionPath, function(collection) {
       if (isLookupKey(key)) {
         index = lookupIndex(collection, key);
       }
@@ -88,25 +105,25 @@ function updateRemove(obj, path) {
   }
 
   return obj;
-}
+})
 
-function updateAssign(obj, path, object) {
-  return updateWith(obj, path, function(old) {
+update.assign = createHelper(function(obj, path, object) {
+  return updateInWith(obj, path, function(old) {
     return Object.assign({}, old, object);
   });
-}
+});
 
-function updateDel(obj, path) {
+update.del = createHelper(function(obj, path) {
   var match = path.match(/^(.+)\.(?!\.)?(.+)$/);
   var objPath = match[1], key = match[2];
 
-  return updateWith(obj, objPath, function(value) {
+  return updateInWith(obj, objPath, function(value) {
     var upd = shallowCopy(value);
 
     delete upd[key];
     return upd;
   });
-}
+});
 
 function _update(current, path, fn) {
   var match = path.match(/^([{\w\d:_\-}]+)\.?(.+)?$/);

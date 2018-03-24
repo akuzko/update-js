@@ -36,6 +36,15 @@ describe('update', function() {
     assert.equal(upd.foo.bar.baz[1], 4, 'value under desired name should be updated');
   });
 
+  context('nested object has numeric keys', function() {
+    it('uses object keys as paths to update target object', function() {
+      var obj = { foo: { '1': { bar: 'baz' } } };
+      var upd = update(obj, 'foo.1.bar', 'baz2');
+
+      assert.deepEqual(upd, { foo: { '1': { bar: 'baz2' } } });
+    });
+  });
+
   context('when object is used as path', function() {
     it('uses object keys as paths to update target object', function() {
       var obj = { foo: { bar: 'baz' }, baz: [{ bak: 'foo' }] };
@@ -43,6 +52,63 @@ describe('update', function() {
 
       assert.equal(upd.foo.bar, 'baz2');
       assert.equal(upd.foo.baz[0].bak, 'foo2');
+    });
+  });
+
+  describe('updating multiple keys at once with helpers', function() {
+    it('correctly applies `with` helper', function() {
+      var obj = { foo: { bar: false, baz: [1, 2] } };
+      var upd = update(obj, {
+        'foo.bar': true,
+        'foo.baz': update.with(baz => baz.map(i => i * 2))
+      });
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [2, 4]);
+    });
+
+    it('appends new item to the collection', function() {
+      var obj = { foo: { bar: false, baz: [1, 2] } };
+      var upd = update(obj, {
+        'foo.bar': true,
+        'foo.baz': update.push(3)
+      });
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [1, 2, 3]);
+    });
+
+    it('pops item item to the collection', function() {
+      var obj = { foo: { bar: false, baz: [1, 2] } };
+      var upd = update(obj, {
+        'foo.bar': true,
+        'foo.baz': update.pop()
+      });
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [1]);
+    });
+
+    it('correctly assigns with lookup key', function() {
+      var obj = { foo: { bar: false, baz: [{ a: 'a1' }, { a: 'a2' }] } };
+      var upd = update(obj, {
+        'foo.bar': true,
+        'foo.baz.{a:a2}': update.assign({ b: 'b2' })
+      });
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [{ a: 'a1' }, { a: 'a2', b: 'b2' }]);
+    });
+
+    it('correctly removes with lookup keys', function() {
+      var obj = { foo: { bar: false, baz: [{ a: 'a1' }, { a: 'a2' }, { a: 'a3' }] } };
+      var upd = update(obj, {
+        'foo.bar': true,
+        'foo.baz.{a:a2}': update.remove()
+      });
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [{ a: 'a1' }, { a: 'a3' }]);
     });
   });
 

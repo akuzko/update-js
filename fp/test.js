@@ -1,4 +1,5 @@
 var update = require('./');
+var updatePlain = require('../');
 var assert = require('assert');
 
 describe('updateFp', function() {
@@ -10,6 +11,19 @@ describe('updateFp', function() {
     assert.strictEqual(upd.foo.bar[0], obj.foo.bar[0]);
     assert.strictEqual(upd.bak, obj.bak);
     assert.deepEqual(upd.foo.bar[1], { baz: 'baz3' });
+  });
+
+  describe('updating multiple keys at once with special helpers', function() {
+    it('correctly applies `with` helper', function() {
+      var obj = { foo: { bar: false, baz: [1, 2] } };
+      var upd = update({
+        'foo.bar': true,
+        'foo.baz': updatePlain.with(baz => baz.map(i => i * 2))
+      })(obj);
+
+      assert.equal(upd.foo.bar, true);
+      assert.deepEqual(upd.foo.baz, [2, 4]);
+    });
   });
 
   describe('update.with', function() {
