@@ -89,6 +89,13 @@ describe('update', function() {
       assert.deepEqual(upd.foo.baz, [1]);
     });
 
+    it('correctly operates with lookup key in a array with empty items', function() {
+      var obj = { foo: { bar: [{ a: 'a1' }, null, { a: 'a2' }] } };
+      var upd = update(obj, 'foo.bar.{a:a2}.a', 'a3');
+
+      assert.deepEqual(upd.foo.bar, [{ a: 'a1' }, null, { a: 'a3' }]);
+    });
+
     it('correctly assigns with lookup key', function() {
       var obj = { foo: { bar: false, baz: [{ a: 'a1' }, { a: 'a2' }] } };
       var upd = update(obj, {

@@ -168,7 +168,7 @@ function lookupIndex(collection, key) {
   });
 
   for (var i = 0; i < collection.length; i++) {
-    if (matches(collection[i], terms)) {
+    if (collection[i] && matches(collection[i], terms)) {
       return i;
     }
   }
