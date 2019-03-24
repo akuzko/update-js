@@ -1,6 +1,6 @@
 {
   "name": "update-js",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "JS object immutability helper",
   "main": "index.js",
   "scripts": {
