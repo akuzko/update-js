@@ -282,6 +282,13 @@ describe('update', function() {
 
       assert.deepEqual(upd.foo.bar, { baz: 'bak', bak: 'barbaz' });
     });
+
+    it('deeply merges passed object with target one', function() {
+      var obj = { foo: { bar: { baz: 'bak', baf: { bas: [1,2] } } } };
+      var upd = update.assign(obj, 'foo', { bar: { bak: 'barbaz', baf: { bas: [3, 4], bak: 'bak' } } });
+
+      assert.deepEqual(upd.foo.bar, { baz: 'bak', bak: 'barbaz', baf: { bas: [3,4], bak: 'bak' } });
+    });
   });
 
   describe('update.del', function() {

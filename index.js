@@ -9,6 +9,30 @@ module.exports = update;
 
 var slice = Array.prototype.slice;
 
+function isObject(item) {
+  return (item && typeof item === 'object' && !Array.isArray(item));
+}
+
+function mergeDeep() {
+  var target = arguments[0];
+  if (arguments.length < 2) return target;
+  var sources = slice.call(arguments, 1);
+  var source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (var key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources);
+}
+
 function Helper(fn, args) {
   this.fn = fn;
   this.args = slice.call(args);
@@ -19,7 +43,7 @@ function createHelper(handler) {
     if (arguments.length < 2) {
       return new Helper(handler, arguments);
     } else {
-      var args = slice.call(arguments, 1)
+      var args = slice.call(arguments, 1);
       args.unshift(shallowCopy(arguments[0]));
       return handler.apply(null, args);
     }
@@ -105,11 +129,11 @@ update.remove = createHelper(function(obj, path) {
   }
 
   return obj;
-})
+});
 
 update.assign = createHelper(function(obj, path, object) {
   return updateInWith(obj, path, function(old) {
-    return Object.assign({}, old, object);
+    return mergeDeep({}, old, object);
   });
 });
 
