@@ -1,0 +1,13 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended"],
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "object-curly-spacing": ["error", "always"],
+    "quotes": ["warn", "single", {"avoidEscape": true}],
+    "semi": ["warn", "always"],
+    "no-unused-vars": ["error", {"varsIgnorePattern": "^_"}]
+  }
+}

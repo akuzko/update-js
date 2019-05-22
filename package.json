@@ -4,7 +4,13 @@
   "description": "JS object immutability helper",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js fp/test.js"
+    "clear": "rimraf index.js utils.js fp",
+    "test": "mocha --require @babel/register --require @babel/polyfill --recursive",
+    "test:watch": "npm run test -- --watch",
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix",
+    "transpile": "npm run clear && babel src -d . --copy-files",
+    "prepublishOnly": "npm run transpile"
   },
   "keywords": [
     "js",
@@ -24,9 +30,19 @@
   },
   "license": "MIT",
   "dependencies": {
+    "get-lookup": "^1.0.0",
     "lodash.set": ">= 3.7.0"
   },
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^3.5.3",
+    "rimraf": "^2.6.3"
   }
 }
