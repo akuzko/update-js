@@ -1,4 +1,4 @@
-import _update from '../index';
+import _update from './index';
 
 updateFp.with = updateFpWith;
 updateFp.unshift = updateFpUnshift;

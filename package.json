@@ -4,7 +4,7 @@
   "description": "JS object immutability helper",
   "main": "index.js",
   "scripts": {
-    "clear": "rimraf index.js utils.js fp",
+    "clear": "rimraf index.js fp.js utils.js",
     "test": "mocha --require @babel/register --require @babel/polyfill --recursive",
     "test:watch": "npm run test -- --watch",
     "lint": "eslint src test",

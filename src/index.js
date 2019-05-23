@@ -37,7 +37,7 @@ update.with = createHelper((obj, path, fn) => {
 
 update.unshift = createHelper((obj, path, item) => {
   return updateInWith(obj, path, (collection) => {
-    return [item].concat(collection);
+    return [item, ...collection];
   });
 });
 
@@ -51,7 +51,7 @@ update.shift = createHelper((obj, path) => {
 
 update.push = createHelper((obj, path, item) => {
   return updateInWith(obj, path, (collection) => {
-    return collection.concat([item]);
+    return [...collection, item];
   });
 });
 
@@ -93,10 +93,9 @@ update.del = createHelper(function(obj, path) {
   const [_match, objPath, key] = path.match(/^(.+)\.(?!\.)?(.+)$/);
 
   return updateInWith(obj, objPath, (value) => {
-    const upd = shallowCopy(value);
+    const { [key]: _toRemove, ...rest } = value;
 
-    delete upd[key];
-    return upd;
+    return rest;
   });
 });
 
