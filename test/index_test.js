@@ -209,12 +209,29 @@ describe('update', () => {
     });
 
     context('when object lookup was not found in the collection', () => {
-      it('throws an exception', () => {
+      it('ignores the update', () => {
         const obj = { foo: { bar: [{ id: 1, baz: 2 }] } };
+        const upd = update(obj, 'foo.bar.{id:2}.baz', 3);
 
-        expect(() => {
-          update(obj, 'foo.bar.{id:2}.baz', 3);
-        }).to.throw('no object found by {id:2}. autocreate is not supported');
+        expect(upd).to.eql(obj);
+      });
+
+      context('and when throwOnLookupMissingObject flag is true', () => {
+        beforeEach(() => {
+          update.throwOnLookupMissingObject = true;
+        });
+
+        afterEach(() => {
+          update.throwOnLookupMissingObject = false;
+        });
+
+        it('throws an exception', () => {
+          const obj = { foo: { bar: [{ id: 1, baz: 2 }] } };
+
+          expect(() => {
+            update(obj, 'foo.bar.{id:2}.baz', 3);
+          }).to.throw('no object found by {id:2}, autocreate is not supported');
+        });
       });
     });
 

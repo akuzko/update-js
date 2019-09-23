@@ -102,9 +102,13 @@ upd.foo.items[1].bar === 5 // true
 ```
 
 Notes on object lookup:
-- object auto-generation is not supported when using path with object lookup, i.e. both collection and object specified by lookup key should exist
-- lookup should be used with simple values since it uses `==` comparison
-- it is possible to specify several lookup fields, like `{type:foo,name:bar}`
+- Object auto-generation is not supported when using path with object lookup,
+  i.e. both collection and object specified by lookup key should exist. If
+  there is no such object, no update is performed. If you want to have an
+  exception to be thrown instead, set `update.throwOnLookupMissingObject = true;`
+  flag somewhere on initialization of your application.
+- Lookup should be used with simple values since it uses `==` comparison.
+- It is possible to specify several lookup fields, like `{type:foo,name:bar}`.
 
 ## `update-js/fp` Module
 

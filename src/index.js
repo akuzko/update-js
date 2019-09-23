@@ -4,6 +4,7 @@ import { Helper, createHelper, shallowCopy } from './utils';
 
 update.in = updateIn;
 updateIn.with = updateInWith;
+update.throwOnLookupMissingObject = false;
 
 export default function update(obj, path, value) {
   return update.with(obj, path, () => value);
@@ -112,7 +113,11 @@ function _update(current, path, fn) {
     keyIndex = lookupIndex(current, key);
 
     if (keyIndex === -1) {
-      throw new Error(`no object found by ${key}. autocreate is not supported`);
+      if (update.throwOnLookupMissingObject) {
+        throw new Error(`no object found by ${key}, autocreate is not supported`);
+      } else {
+        return current;
+      }
     }
   }
 
