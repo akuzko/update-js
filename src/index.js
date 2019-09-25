@@ -1,10 +1,10 @@
 import set from 'lodash.set';
 import { isLookupKey, lookupIndex } from 'get-lookup';
-import { Helper, createHelper, shallowCopy } from './utils';
+import { Helper, createHelper, shallowCopy, noop } from './utils';
 
 update.in = updateIn;
 updateIn.with = updateInWith;
-update.throwOnLookupMissingObject = false;
+update.onLookupMissingObject = noop;
 
 export default function update(obj, path, value) {
   return update.with(obj, path, () => value);
@@ -113,11 +113,9 @@ function _update(current, path, fn) {
     keyIndex = lookupIndex(current, key);
 
     if (keyIndex === -1) {
-      if (update.throwOnLookupMissingObject) {
-        throw new Error(`no object found by ${key}, autocreate is not supported`);
-      } else {
-        return current;
-      }
+      update.onLookupMissingObject(current, key);
+
+      return current;
     }
   }
 

@@ -20,3 +20,19 @@ export function createHelper(handler) {
 export function shallowCopy(obj) {
   return Array.isArray(obj) ? [...obj] : { ...obj };
 }
+
+
+// Default helpers for handling lookup key missing object scenario.
+// To be used as values assigned to `update.onLookupMissingObject` property.
+export function noop() {}
+
+export function warnOnMissing(obj, key) {
+  if (typeof console !== undefined) {
+    // eslint-disable-next-line no-console, no-undef
+    (console.warn || console.log)(`update-js: No object found by ${key}, update ignored. Collection:`, obj);
+  }
+}
+
+export function throwOnMissing(obj, key) {
+  throw new Error(`update-js: No object found by ${key}, autocreate is not supported.`);
+}

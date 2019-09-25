@@ -1,4 +1,5 @@
 import update from '../src';
+import { noop, throwOnMissing } from '../src/utils';
 import { expect } from 'chai';
 
 describe('update', () => {
@@ -216,13 +217,13 @@ describe('update', () => {
         expect(upd).to.eql(obj);
       });
 
-      context('and when throwOnLookupMissingObject flag is true', () => {
+      context('and when onLookupMissingObject is "throw"', () => {
         beforeEach(() => {
-          update.throwOnLookupMissingObject = true;
+          update.onLookupMissingObject = throwOnMissing;
         });
 
         afterEach(() => {
-          update.throwOnLookupMissingObject = false;
+          update.onLookupMissingObject = noop;
         });
 
         it('throws an exception', () => {
@@ -230,7 +231,7 @@ describe('update', () => {
 
           expect(() => {
             update(obj, 'foo.bar.{id:2}.baz', 3);
-          }).to.throw('no object found by {id:2}, autocreate is not supported');
+          }).to.throw('update-js: No object found by {id:2}, autocreate is not supported.');
         });
       });
     });

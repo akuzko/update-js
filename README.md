@@ -104,11 +104,34 @@ upd.foo.items[1].bar === 5 // true
 Notes on object lookup:
 - Object auto-generation is not supported when using path with object lookup,
   i.e. both collection and object specified by lookup key should exist. If
-  there is no such object, no update is performed. If you want to have an
-  exception to be thrown instead, set `update.throwOnLookupMissingObject = true;`
-  flag somewhere on initialization of your application.
+  no object exists, update action will be ignored.
 - Lookup should be used with simple values since it uses `==` comparison.
 - It is possible to specify several lookup fields, like `{type:foo,name:bar}`.
+
+#### Handling Missing Objects
+
+When `update` encounters lookup key that doesn't correspond to any object in
+collection, it invokes `update.onLookupMissingObject` handler, passing collection
+and lookup key to that function. There may be different strategies for handling
+such cases, depending on execution environment and your needs.
+
+`update-js` provides 3 predefined handlers, available from `update-js/utils`:
+
+```js
+import update from 'update-js';
+import { warnOnMissing, throwOnMissing, noop } from 'update-js/utils';
+
+update.onLookupMissingObject = warnOnMissing;
+// ^ this will `console.warn` message regarding attempt to update missing object
+
+update.onLookupMissingObject = throwOnMissing;
+// ^ this will throw exception on attempt to update missing object
+
+update.onLookupMissingObject = noop;
+// ^ this will ignore attempt entirely
+```
+
+The default value for `update.onLookupMissingObject` is `noop`.
 
 ## `update-js/fp` Module
 
