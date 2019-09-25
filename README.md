@@ -262,6 +262,11 @@ upd.foo.bar // => { bak: 'baz' };
 Note that this helper cannot be used to delete property for target object itself,
 i.e. `update.del(obj, 'foo')` won't work.
 
+## Credits
+
+- [Aleksandr Zhukov](https://github.com/AleksandrZhukov) - Opening issues,
+  feature suggestions and contributions.
+
 ## License
 
 MIT
