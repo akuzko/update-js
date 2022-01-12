@@ -266,6 +266,8 @@ i.e. `update.del(obj, 'foo')` won't work.
 
 - [Aleksandr Zhukov](https://github.com/AleksandrZhukov) - Opening issues,
   feature suggestions and contributions.
+- [Maksym Agryzko](https://github.com/avv123avv) - Maintenance, fixing
+  vulnerability issues.
 
 ## License
 
